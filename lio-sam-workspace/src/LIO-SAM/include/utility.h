@@ -59,6 +59,9 @@ typedef pcl::PointXYZI PointType;
 
 enum class SensorType { VELODYNE, OUSTER };
 
+/**
+ * Param server 用于保存所有节点需要的参数
+ */
 class ParamServer
 {
 public:
@@ -244,6 +247,12 @@ public:
         usleep(100);
     }
 
+    ///
+    ///@brief 旋转 IMU 消息使其和 Lidar 坐标系各轴平行，参考：https://github.com/TixiaoShan/LIO-SAM/blob/master/config/doc/imu-transform.png
+    ///
+    ///@param imu_in 
+    ///@return sensor_msgs::Imu 
+    ///
     sensor_msgs::Imu imuConverter(const sensor_msgs::Imu& imu_in)
     {
         sensor_msgs::Imu imu_out = imu_in;
