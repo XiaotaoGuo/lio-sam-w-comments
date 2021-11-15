@@ -128,13 +128,13 @@ public:
     ros::Time timeLaserInfoStamp;
     double timeLaserInfoCur;
 
-    float transformTobeMapped[6];   // 当前帧的全局位姿最有估计，roll, pitch, yaw, x, y, z
+    float transformTobeMapped[6];   // 当前帧的全局位姿最优估计，roll, pitch, yaw, x, y, z
 
     std::mutex mtx;
     std::mutex mtxLoopInfo;
 
     bool isDegenerate = false;
-    cv::Mat matP;       // 位姿的协方差矩阵，用来作为退化标志位
+    cv::Mat matP;       // 退化时对位姿使用的调整矩阵，可以将退化方向的迭代置零
 
     int laserCloudCornerFromMapDSNum = 0;
     int laserCloudSurfFromMapDSNum = 0;
@@ -1425,7 +1425,7 @@ public:
                     break;
                 }
             }
-            matP = matV.inv() * matV2;  // 更新位姿的协方差
+            matP = matV.inv() * matV2;  // 更新位姿的校正矩阵
         }
 
         // 如果发生退化，就对该增量进行修改，不进行退化方向的更新
@@ -1841,7 +1841,7 @@ public:
 
     void publishOdometry()
     {
-        // Publish odometry for ROS (global) -- 发布全局里程计位姿
+        // Publish odometry for ROS (global) -- 发布全局 lidar 里程计位姿
         nav_msgs::Odometry laserOdometryROS;
         laserOdometryROS.header.stamp = timeLaserInfoStamp;
         laserOdometryROS.header.frame_id = odometryFrame;
@@ -1859,7 +1859,7 @@ public:
         tf::StampedTransform trans_odom_to_lidar = tf::StampedTransform(t_odom_to_lidar, timeLaserInfoStamp, odometryFrame, "lidar_link");
         br.sendTransform(trans_odom_to_lidar);
 
-        // Publish odometry for ROS (incremental) -- 发布增量里程计位姿供 IMU 预积分模块使用
+        // Publish odometry for ROS (incremental) -- 发布增量 lidar 里程计位姿供 IMU 预积分模块使用
         static bool lastIncreOdomPubFlag = false;
         static nav_msgs::Odometry laserOdomIncremental; // incremental odometry msg
         static Eigen::Affine3f increOdomAffine; // incremental odometry in affine
@@ -1916,7 +1916,7 @@ public:
     }
 
     ///
-    ///@brief 发布关键帧位姿、路径及相关点云消息
+    ///@brief 发布关键帧位姿、路径及相关点云消息（可视化）
     ///
     ///
     void publishFrames()

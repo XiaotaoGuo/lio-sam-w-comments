@@ -1,6 +1,18 @@
 # LIO-SAM With Chinese Comments
 
-A Loam 带详细中文注释版本，主要为个人学习用，欢迎讨论。
+LIO-SAM 的详细中文注释版本，主要为个人学习用，欢迎讨论。
+
+LIO-SAM 的整体逻辑如下：
+
+![基本流程](./documentation/Overview.png)
+
+主要分为四个部分，其相应的逻辑梳理可以参考：
+
+- [LIO-SAM 代码分析（零）：系统总览](https://xiaotaoguo.com/p/lio-sam-overview/)
+- [LIO-SAM 代码分析（一）：imuPreintegration](https://xiaotaoguo.com/p/lio-sam-imupreintegration/)
+- [LIO-SAM 代码分析（二）：imageProjection](https://xiaotaoguo.com/p/lio-sam-imageprojection/)
+- [LIO-SAM 代码分析（三）：featureExtraction](https://xiaotaoguo.com/p/lio-sam-featureextraction/)
+- [LIO-SAM 代码分析（四）：mapOptimization](https://xiaotaoguo.com/p/lio-sam-mapoptimization/)
 
 每个节点的相应逻辑梳理在 [Documentataion](./documentation)
 
